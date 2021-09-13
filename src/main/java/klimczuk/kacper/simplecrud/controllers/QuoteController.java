@@ -12,7 +12,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("${api.url.prefix}")
 public class QuoteController {
 
     @Autowired
@@ -36,6 +36,18 @@ public class QuoteController {
 
     @PutMapping("/quotes/{id}")
     public Quote replaceQuote(@Valid @RequestBody Quote newQuote, @PathVariable long id) {
+        return replaceQuoteById(newQuote, id);
+    }
+
+    @DeleteMapping("/quotes/{id}")
+    public void deleteQuote(@PathVariable long id) {
+        if (!quoteRepository.existsById(id)) {
+            throw new QuoteNotFoundException(id);
+        }
+        quoteRepository.deleteById(id);
+    }
+
+    private Quote replaceQuoteById(Quote newQuote, long id) {
         return quoteRepository.findById(id)
                 .map(quote -> {
                     quote.setContent(newQuote.getContent());
@@ -46,13 +58,5 @@ public class QuoteController {
                     newQuote.setId(id);
                     return quoteRepository.save(newQuote);
                 });
-    }
-
-    @DeleteMapping("/quotes/{id}")
-    public void deleteQuote(@PathVariable long id) {
-        if (!quoteRepository.existsById(id)) {
-            throw new QuoteNotFoundException(id);
-        }
-        quoteRepository.deleteById(id);
     }
 }

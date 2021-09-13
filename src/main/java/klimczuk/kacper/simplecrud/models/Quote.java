@@ -1,8 +1,6 @@
 package klimczuk.kacper.simplecrud.models;
 
-
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
